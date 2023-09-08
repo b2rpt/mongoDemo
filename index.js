@@ -61,14 +61,18 @@ const getCourse = async () => {
 
 // getCourse();
 
-//logical query
+//logical query and regular Expression and pagination
 const getCourseUsingLogicalOperator = async () => {
-  const course = await Course.find()
+  const pageNumber = 2;
+  const pageSize = 10;
+  const course = await Course.find({ name: /^react/i })
     .or([{ isPublished: true }, { price: { $eq: 10 } }])
     .and([{ tags: "react" }], { price: { $nq: 10 } })
-    .limit(10)
+    .skip((pageNumber - 1) * pageSize)
+    .limit(pageSize)
     .sort({ name: -1 })
     .select({ name: 1, tags: 1, price: 1 });
+  // .count();
   console.log(course);
 };
 
