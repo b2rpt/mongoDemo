@@ -28,7 +28,7 @@ const createCourse = async () => {
     tags: ["react", "frontend"],
     isPublished: true,
     data: Date.now(),
-    price:15
+    price: 15,
   });
 
   try {
@@ -55,8 +55,21 @@ const getCourse = async () => {
   })
     .limit(10)
     .sort({ name: -1 })
-    .select({ name: 1, tags: 1, price:1 });
+    .select({ name: 1, tags: 1, price: 1 });
   console.log(course);
 };
 
-getCourse();
+// getCourse();
+
+//logical query
+const getCourseUsingLogicalOperator = async () => {
+  const course = await Course.find()
+    .or([{ isPublished: true }, { price: { $eq: 10 } }])
+    .and([{ tags: "react" }], { price: { $nq: 10 } })
+    .limit(10)
+    .sort({ name: -1 })
+    .select({ name: 1, tags: 1, price: 1 });
+  console.log(course);
+};
+
+getCourseUsingLogicalOperator();
