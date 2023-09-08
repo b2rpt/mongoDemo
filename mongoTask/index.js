@@ -70,4 +70,40 @@ const getCourse3 = async () => {
   console.log(result);
 };
 
-getCourse3();
+// getCourse3();
+
+const updateCourse = async (id) => {
+  const course = await Course.findById(id);
+  if (!course) return;
+  course.set({
+    isPublished: false,
+    author: "rpt",
+    name: "updated -test",
+  });
+  const result = await course.save();
+  console.log(result);
+};
+// updateCourse("64fae3b23938800fdc659ca3");
+
+const updateInDb = async (id) => {
+  const result = await Course.updateOne(
+    {
+      _id: id,
+    },
+    {
+      $set: {
+        author: "rpt1",
+        isPublished: false,
+      },
+    }
+  );
+  console.log(result);
+};
+
+// updateInDb("64fae3b23938800fdc659ca3")
+
+const removeCourse = async (id) => {
+  const result = await Course.findByIdAndRemove(id);
+  console.log(result);
+};
+removeCourse("64fae3b23938800fdc659ca3");
