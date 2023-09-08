@@ -1,15 +1,21 @@
 const mongoose = require("mongoose");
 
 mongoose
-  .connect("mongodb://localhost/playground")//updates your connection string
+  .connect("mongodb://localhost/playground") //update your connection string
   .then(() => console.log("connected to db.."))
   .catch((err) => console.log("error occurred", err));
 
 const courseSchema = new mongoose.Schema({
-  name: String,
+  name: { type: String, required: true },
   author: String,
   tags: Array,
-  isPublished: Boolean,
+  isPublished: { type: Boolean, default: false },
+  price: {
+    type: Number,
+    required: function () {
+      return this.isPublished;
+    },
+  },
   date: { type: Date, default: Date.now },
 });
 
@@ -18,12 +24,13 @@ const Course = mongoose.model("Course", courseSchema);
 const createCourse = async () => {
   const course = new Course({
     name: "react.js",
-    author: "tiwari",
+    author: "rpt",
     tags: ["react", "frontend"],
     isPublished: true,
     data: Date.now(),
-    age: 1,
+    price:15
   });
+
   try {
     await course.save();
     console.log("added successfully");
@@ -44,10 +51,11 @@ const getCourse = async () => {
   const course = await Course.find({
     isPublished: true,
     tags: { $in: ["backend", "frontend"] },
+    price: { $lte: 10 },
   })
     .limit(10)
     .sort({ name: -1 })
-    .select({ name: 1, tags: 1 });
+    .select({ name: 1, tags: 1, price:1 });
   console.log(course);
 };
 
